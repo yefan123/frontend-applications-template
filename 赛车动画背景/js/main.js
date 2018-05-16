@@ -4,8 +4,8 @@ let $ = {
     canvas2: null,
     ctx2: null,
     colors: {
-        sky: "#D4F5FE",
-        mountains: "#83CACE",
+        sky: null,  //变成渐变色
+        mountains: "#bbb",
         ground: "#8FC04C",
         groundDark: "#73B043",
         road: "#606a7c",
@@ -58,6 +58,13 @@ $.canvas2 = document.createElement('canvas');
 $.canvas2.width = $.canvas.width;
 $.canvas2.height = $.canvas.height;
 $.ctx2 = $.canvas2.getContext('2d');
+
+//天空颜色变成渐变色
+const grad = $.ctx.createLinearGradient(0, 0, 0, $.settings.skySize);
+grad.addColorStop(0, "#D4F4FF");
+grad.addColorStop(1, '#fff');
+$.colors.sky = grad;
+
 window.addEventListener("keydown", keyDown, false);
 window.addEventListener("keyup", keyUp, false);
 
@@ -65,10 +72,14 @@ drawBg();
 draw();
 
 //模拟一直按'上'建
-let testEvent={keyCode:38};
-setInterval(() => {
+let testEvent = { keyCode: 38 };
+(function loop() {
     keyDown(testEvent);
-}, 10);
+    requestAnimationFrame(loop);
+})();
+// setInterval(() => {
+// keyDown(testEvent);
+// }, 10);
 
 
 function draw() {
@@ -101,6 +112,7 @@ function draw() {
     }, 1000 / $.settings.fps);
 }
 
+//仪表盘
 function drawHUD(ctx, centerX, centerY, color) {
     let radius = 50, tigs = [0, 90, 135, 180, 225, 270, 315],
         angle;
@@ -256,27 +268,14 @@ function move(e, isKeyDown) {
     }
 }
 
-function randomRange(min, max) {
-    return min + Math.random() * (max - min);
-}
-
-function norm(value, min, max) {
-    return (value - min) / (max - min);
-}
-
-function lerp(norm, min, max) {
-    return (max - min) * norm + min;
-}
-
-function map(value, sourceMin, sourceMax, destMin, destMax) {
-    return lerp(norm(value, sourceMin, sourceMax), destMin, destMax);
-}
-
-function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max);
-}
+const lerp = (norm, min, max) => (max - min) * norm + min,
+    norm = (value, min, max) => (value - min) / (max - min),
+    randomRange = (min, max) => min + Math.random() * (max - min),
+    clamp = (value, min, max) => Math.min(Math.max(value, min), max),
+    map = (value, sourceMin, sourceMax, destMin, destMax) => lerp(norm(value, sourceMin, sourceMax), destMin, destMax);
 
 function drawBg() {
+
     $.ctx.fillStyle = $.colors.sky;
     $.ctx.fillRect(0, 0, $.canvas.width, $.settings.skySize);
     drawMountain(0, 60, 200);
@@ -335,6 +334,7 @@ function drawCar() {
     drawCarBody($.ctx);
 }
 
+//画车
 function drawCarBody(ctx) {
     let startX = 299, startY = 311,
         lights = [10, 26, 134, 152],
@@ -343,10 +343,11 @@ function drawCarBody(ctx) {
     /* Front */
     roundedRect($.ctx, "#C2C2C2", startX + 6 + ($.state.turn * 1.1), startY - 18, 146, 40, 18);
 
+    //车棚
     ctx.beginPath();
     ctx.lineWidth = "12";
-    ctx.fillStyle = "#FFFFFF";
-    ctx.strokeStyle = "#FFFFFF";
+    ctx.fillStyle = "red";
+    ctx.strokeStyle = "red";
     ctx.moveTo(startX + 30, startY);
     ctx.lineTo(startX + 46 + $.state.turn, startY - 25);
     ctx.lineTo(startX + 114 + $.state.turn, startY - 25);
@@ -379,11 +380,12 @@ function drawCarBody(ctx) {
     ctx.fill();
     ctx.stroke();
 
-    roundedRect(ctx, "#474747", startX - 4, startY, 169, 10, 3, true, 0.2);
+    //车后盖风引导扇
     roundedRect(ctx, "#474747", startX + 40, startY + 5, 80, 10, 5, true, 0.1);
+    roundedRect(ctx, "#000", startX - 8, startY, 177, 7, 3, true, 0.2);
 
-    ctx.fillStyle = "#FF9166";
-
+    //车灯
+    ctx.fillStyle = "#91FF66";
     lights.forEach(function (xPos) {
         ctx.beginPath();
         ctx.arc(startX + xPos, startY + 20 + lightsY, 6, 0, Math.PI * 2, true);
@@ -395,10 +397,16 @@ function drawCarBody(ctx) {
     ctx.lineWidth = "9";
     ctx.fillStyle = "#222222";
     ctx.strokeStyle = "#444";
+    //车牌..
+    roundedRect($.ctx, "#FFF", startX + 55, startY + 25, 50, 18, 3, true, 0.05);
 
-    roundedRect($.ctx, "#FFF", startX + 60, startY + 25, 40, 18, 3, true, 0.05);
+    ctx.font="15px Arial";
+    ctx.textAlign="center";
+    ctx.fillStyle='black';
+    ctx.fillText("BMW",startX + 80, startY + 39);
 }
 
+//圆角矩形-->整个赛车由各种圆角矩形组成
 function roundedRect(ctx, color, x, y, width, height, radius, turn, turneffect) {
     let skew = turn === true ? $.state.turn * turneffect : 0;
 
