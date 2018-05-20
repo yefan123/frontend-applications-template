@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>简易画笔的实现</title>
+	<style type="text/css">
+		#cavs {
+			border: 1px solid #CC6600;
+			border-radius: 25px;
+			box-shadow: 10px 10px 5px #888888;
+		}
+
+		#kuang {
+			margin-left: 40px;
+			width: 1100px;
+			height: 50px;
+			margin-top: 15px;
+			border-radius: 25px;
+			box-shadow: 10px 10px 5px #888888;
+		}
+
+		#k1 {
+			float: left;
+			margin-left: 43px;
+		}
+
+		.button {
+			background-color: #F9D448;
+			/* 土黄色 */
+			border: none;
+			color: white;
+			padding: 6px 15px;
+			text-align: center;
+			border-radius: 25px;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+			cursor: pointer;
+			-webkit-transition-duration: 0.4s;
+			/* Safari */
+			transition-duration: 0.4s;
+		}
+
+		.button2:hover {
+			box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+		}
+	</style>
+</head>
+
+<body>
+	<canvas id="cavs" width="1200" height="542"></canvas>
+	<br/>
+	</div>
+	<div id="kuang">
+		<div id="k1">
+			<input type="color" id="color" class="button button2">
+		</div>
+		<div id="k1">
+			<input type="button" value="保存" id="save" class="button button2">
+		</div>
+		<div id="k1">
+			<input type="button" value="下载" id="download" class="button button2">
+		</div>
+		<div id="k1">
+			<input type="button" value="撤销" id="undo" class="button button2">
+		</div>
+		<div id="k1">
+			<input type="button" value="清屏" id="clear" class="button button2">
+		</div>
+		<div id="k1">
+			<input type="button" value="线条" id="Line" class="button button2">
+		</div>
+		<div id="k1">
+			<input type="button" value="橡皮" id="eraser" class="button button2">
+		</div>
+		<div id="k1">
+			<!-- 滑动条 -->
+			<input class="button button2" type="range" id="thickness" value="1" min="1" max="10">
+		</div>
+	</div>
+	<div style="text-align:center;">
+	</div>
+	<script src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/huabu.js"></script>
+</body>
+
+</html>
