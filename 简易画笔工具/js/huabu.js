@@ -4,7 +4,7 @@ let img1 = [];//储存图像数组，用于撤销
 let canX;//画布左上角的x坐标
 let canY;//画布左上角y坐标
 $(function () {
-	canvas = $('#cavs')[0];//获取画布的dom
+	canvas = document.querySelector('#cavs');//获取画布的dom
 	context = canvas.getContext('2d');//获取context
 	canX = canvas.offsetLeft;//获取画布左上角的x坐标
 	canY = canvas.offsetTop;//获取画布左上角的y坐标
@@ -47,15 +47,15 @@ let Line = {
 		// let context = canvas.getContext('2d');//获取绘制2d图形的context
 		//初始化画笔颜色
 		console.log(context.strokeStyle);
-		$('#cavs').mousemove(function (e) {//当鼠标在画布上移动时执行
+		canvas.onmousemove=function (e) {//当鼠标在画布上移动时执行
 			if (painting === true) {//判断是否是可绘画状态
 				let x = e.pageX;//鼠标当前x坐标
 				let y = e.pageY;//鼠标当前y坐标
 				context.lineTo(x - canX, y - canY);//确定线的结束位置，canvas.offsetLeft画板离浏览器左侧的距离，canvas.offsetTop画板离浏览器上部的距离
 				context.stroke();
 			}
-		});
-		$('#cavs').mousedown(function (e) {//当鼠标按下时触发
+		};
+		canvas.onmousedown=function (e) {//当鼠标按下时触发
 			painting = true;//鼠标按下可以作画
 			p_x = e.pageX;//画笔起始x坐标
 			p_y = e.pageY;//画笔起始y坐标
@@ -66,18 +66,18 @@ let Line = {
 			let imgData = context.getImageData(0, 0, canvas.width, canvas.height);
 			//加入数组
 			img1.push(imgData);
-		});
-		$('#cavs').mouseup(function (e) {
+		};
+		canvas.onmouseup=function (e) {
 			painting = false;//鼠标松开，禁止作画
 			context.closePath();//关闭画笔路径
 			$('#cavs').css('cursor', '');//消除鼠标小手
 
-		});
-		$('#cavs').mouseleave(function (e) {//鼠标移出时，禁止作画
+		};
+		canvas.onmouseleave=function (e) {//鼠标移出时，禁止作画
 			painting = false;
 			context.closePath();
 			$('#cavs').css('cursor', '');//消除鼠标小手
-		});
+		};
 		$("#color").change(function (event) {//当颜色改变时触发
 			context.strokeStyle = $(this).val();//改变画笔颜色
 		});
@@ -133,7 +133,7 @@ let download = {
 	draw: function () {
 		// 保存图片，下载到本地
 		let type = 'png';
-		let imgData = $('#cavs')[0].toDataURL(type);
+		let imgData = canvas.toDataURL(type);
 		/**
 		 * 获取mimeType
 		 * @param  {String} type the old mime-type
